@@ -1,0 +1,80 @@
+SELECT
+  COUNT(*) AS qty_rows
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_20170801`
+LIMIT
+  1000
+SELECT
+  visitNumber,
+IF
+  (visitNumber=1,"New Visitor","Returning Visitor") userType
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_20170801`
+LIMIT
+  1000
+SELECT
+  visitId != visitStartTime AS isSplitted,
+  COUNT(*) AS quantity
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_20170801`
+GROUP BY
+  1
+SELECT
+  visitId != visitStartTime AS isSplitted,
+  COUNT(*) AS quantity,
+  COUNT(DISTINCT date) AS tables
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+WHERE
+  _table_suffix > '0715'
+GROUP BY
+  1 -- FOR Identifing how many users came via a certain referrer url.
+SELECT
+  PARSE_DATE('%Y%m%d', date) AS date,
+  SUM(totals.visits) AS sessions,
+  SUM(totals.hits) AS hits,
+  SUM(totals.pageviews) AS pageviews,
+  SUM(totals.bounces) / SUM(totals.visits) AS bounceRate,
+  SUM(totals.transactions) AS transactions
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+WHERE
+  _table_suffix > '0725'
+GROUP BY
+  1
+ORDER BY
+  1 DESC -- Now time format IN UTC
+SELECT
+  TIMESTAMP_SECONDS(visitStartTime) AS visitStartTime,
+  PARSE_DATE('%Y%m%d', date) AS date,
+  SUM(totals.visits) AS sessions,
+  SUM(totals.hits) AS hits,
+  SUM(totals.pageviews) AS pageviews,
+  SUM(totals.bounces) / SUM(totals.visits) AS bounceRate,
+  SUM(totals.transactions) AS transactions
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+WHERE
+  _table_suffix > '0725'
+GROUP BY
+  visitStartTime,
+  date
+ORDER BY
+  date DESC -- Now convert the visitStartTime property TO IST.
+SELECT
+  FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%S', TIMESTAMP_SECONDS(visitStartTime), 'Asia/Kolkata') AS visitStartTime_IST,
+  PARSE_DATE('%Y%m%d', date) AS date,
+  SUM(totals.visits) AS sessions,
+  SUM(totals.hits) AS hits,
+  SUM(totals.pageviews) AS pageviews,
+  SUM(totals.bounces) / SUM(totals.visits) AS bounceRate,
+  SUM(totals.transactions) AS transactions
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+WHERE
+  _table_suffix > '0725'
+GROUP BY
+  visitStartTime_IST,
+  date
+ORDER BY
+  date DESC
