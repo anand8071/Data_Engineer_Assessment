@@ -1,7 +1,10 @@
 # Data_Engineer_Assessment_Questions
-*1. Problem Set 1 - Working with Regex
+1. Problem Set 1 - Working with Regex
+
 2. Problem Set 2 - SQL
+
 3. Problem Set 3 - Working with BigQuery
+
 4. Problem Set 4 - Building a Singer Tap
 
 # **Problem Set I - Regex**
